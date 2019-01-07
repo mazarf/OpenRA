@@ -645,12 +645,18 @@ namespace OpenRA.Mods.Common.Traits
 
 		void INotifyBecomingIdle.OnBecomingIdle(Actor self)
 		{
-			if (TopLeft.Layer == 0)
-				return;
-
-			var moveTo = ClosestGroundCell();
-			if (moveTo != null)
-				self.QueueActivity(MoveTo(moveTo.Value, 0));
+			if (TopLeft.Layer == CustomMovementLayerType.Subterranean || TopLeft.Layer == CustomMovementLayerType.Jumpjet)
+			{
+				var moveTo = ClosestGroundCell();
+				if (moveTo != null)
+					self.QueueActivity(MoveTo(moveTo.Value, 0));
+			}
+			else if (TopLeft.Layer == CustomMovementLayerType.Tunnel)
+			{
+				var moveTo = self.Trait<EntersTunnels>().TunnelExit;
+				if (moveTo != null)
+					self.QueueActivity(MoveTo(moveTo.Value, 0));
+			}
 		}
 
 		void INotifyBlockingMove.OnNotifyBlockingMove(Actor self, Actor blocking)

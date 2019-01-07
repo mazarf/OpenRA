@@ -28,10 +28,11 @@ namespace OpenRA.Mods.Common.Traits
 		public object Create(ActorInitializer init) { return new EntersTunnels(init.Self, this); }
 	}
 
-	public class EntersTunnels : IIssueOrder, IResolveOrder, IOrderVoice
+	public class EntersTunnels : IIssueOrder, IResolveOrder, IOrderVoice, INotifyCustomLayerChanged
 	{
 		readonly EntersTunnelsInfo info;
 		readonly IMove move;
+		public CPos? TunnelExit { get; private set; }
 
 		public EntersTunnels(Actor self, EntersTunnelsInfo info)
 		{
@@ -79,6 +80,34 @@ namespace OpenRA.Mods.Common.Traits
 			self.SetTargetLine(Target.FromCell(self.World, tunnel.Exit.Value), Color.Green);
 			self.QueueActivity(move.MoveTo(tunnel.Entrance, tunnel.NearEnough));
 			self.QueueActivity(move.MoveTo(tunnel.Exit.Value, tunnel.NearEnough));
+		}
+
+		public void CustomLayerChanged(Actor self, byte oldLayer, byte newLayer)
+		{
+			if (newLayer == CustomMovementLayerType.Tunnel)
+			{
+				var tunnels = self.World.ActorsWithTrait<TunnelEntrance>();
+
+				TunnelEntrance closestTunnel = null;
+				var closestDist = int.MaxValue;
+
+				foreach (var tunnel in tunnels)
+				{
+					var distance = tunnel.Actor.Location - self.Location;
+
+					if (distance.LengthSquared < closestDist)
+					{
+						closestDist = distance.LengthSquared;
+						closestTunnel = tunnel.Trait;
+					}
+				}
+
+				TunnelExit = closestTunnel.Exit;
+			}
+			else if (oldLayer == CustomMovementLayerType.Tunnel)
+			{
+				TunnelExit = null;
+			}
 		}
 
 		class EnterTunnelOrderTargeter : UnitOrderTargeter
