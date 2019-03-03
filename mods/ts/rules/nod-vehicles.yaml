@@ -262,6 +262,11 @@ ART2:
 	WithVoxelTurret@deployed:
 		Turret: deployed
 		RequiresCondition: deployed
+	AttackDeploy@undeployed:
+		Voice: Attack
+		Armaments: undeployed
+		RequiresCondition: undeployed
+		FacingTolerance: 128
 	AttackTurreted@deployed:
 		Voice: Attack
 		Armaments: deployed
@@ -270,6 +275,9 @@ ART2:
 		PauseOnCondition: empdisable
 		TargetFrozenActors: True
 		ForceFireIgnoresActors: True
+	Armament@undeployed:
+		Name: undeployed
+		Weapon: 155mm
 	Armament@deployed:
 		Name: deployed
 		Turret: deployed

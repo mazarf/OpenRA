@@ -373,6 +373,11 @@ JUGG:
 		Turret: deployed
 		RequiresCondition: deployed
 		Recoils: false
+	AttackDeploy@undeployed:
+		Voice: Attack
+		Armaments: undeployed
+		RequiresCondition: undeployed
+		FacingTolerance: 128
 	AttackTurreted@deployed:
 		Voice: Attack
 		Armaments: deployed
@@ -381,6 +386,9 @@ JUGG:
 		PauseOnCondition: empdisable
 		TargetFrozenActors: True
 		ForceFireIgnoresActors: True
+	Armament@undeployed:
+		Name: undeployed
+		Weapon: 155mm
 	Armament@deployed:
 		Name: deployed
 		Turret: deployed
